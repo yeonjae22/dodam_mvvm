@@ -1,0 +1,2 @@
+rootProject.name='dodam_mvvm'
+include ':app'

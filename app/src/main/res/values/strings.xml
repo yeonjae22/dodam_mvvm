@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">도담도담</string>
+    <string name="learning">학습놀이</string>
+    <string name="review">복습놀이</string>
+    <string name="fun_songs">재미동요</string>
+    <string name="my_word">나만의 단어장</string>
+    <string name="hangul">한글</string>
+    <string name="english">영어</string>
+    <string name="fruit_shop">과일가게</string>
+    <string name="playground">놀이터</string>
+    <string name="zoo">동물원</string>
+    <string name="restaurant">식당</string>
+    <string name="toy_shop">장난감가게</string>
+    <string name="home">집</string>
+    <string name="answer">정답입니다</string>
+    <string name="wrong_answer">다시 한번 생각해보세요</string>
+    <string name="register_word">단어 등록</string>
+    <string name="modify_word">단어 수정</string>
+    <string name="learning_my_word">나만의 단어 학습</string>
+    <string name="select_image">단어 이미지를 선택해주세요.</string>
+    <string name="selected_image">단어 이미지가 선택되었습니다.</string>
+    <string name="file_provider" translatable="false">com.kroegerama.imgpicker.demo.fileprovider</string>
+    <string name="register">등록</string>
+    <string name="cancel">취소</string>
+    <string name="register_my_word">나만의 단어를 등록해보세요.</string>
+    <string name="enter_hangul">단어명(한글)을 입력해주세요.</string>
+    <string name="enter_english">단어명(영어)을 입력해주세요.</string>
+    <string name="modified">수정</string>
+    <string name="success_register_word">단어 등록 성공</string>
+    <string name="success_update_word">단어 수정 성공</string>
+    <string name="success_delete_word">단어 삭제 성공</string>
+</resources>
