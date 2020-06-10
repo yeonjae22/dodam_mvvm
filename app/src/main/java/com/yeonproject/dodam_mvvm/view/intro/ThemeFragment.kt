@@ -2,36 +2,27 @@ package com.yeonproject.dodam_mvvm.view.intro
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import com.yeonproject.dodam_mvvm.R
+import com.yeonproject.dodam_mvvm.databinding.FragmentThemeBinding
+import com.yeonproject.dodam_mvvm.view.base.BaseFragment
 import com.yeonproject.dodam_mvvm.view.review.ReviewActivity
 import com.yeonproject.dodam_mvvm.view.word.WordListActivity
-import com.yeonproject.dodam_mvvm.R
-import kotlinx.android.synthetic.main.fragment_theme.*
 
-class ThemeFragment : Fragment() {
+class ThemeFragment : BaseFragment<FragmentThemeBinding>(R.layout.fragment_theme) {
     private val dispatcher by lazy {
         requireActivity().onBackPressedDispatcher
     }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_theme, container, false)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val index = arguments?.getInt(INDEX) ?: 0
         val language = arguments?.getString(LANGUAGE) ?: ""
 
-        btn_back.setOnClickListener {
+        binding.btnBack.setOnClickListener {
             dispatcher.onBackPressed()
         }
 
-        btn_fruit.setOnClickListener {
+        binding.btnFruit.setOnClickListener {
             when (index) {
                 1 -> {
                     val intent = Intent(context, WordListActivity::class.java)
@@ -48,11 +39,11 @@ class ThemeFragment : Fragment() {
             }
         }
 
-        btn_playground.setOnClickListener {
+        binding.btnPlayground.setOnClickListener {
 
         }
 
-        btn_zoo.setOnClickListener {
+        binding.btnZoo.setOnClickListener {
             when (index) {
                 1 -> {
                     val intent = Intent(context, WordListActivity::class.java)
@@ -69,15 +60,15 @@ class ThemeFragment : Fragment() {
             }
         }
 
-        btn_restaurant.setOnClickListener {
+        binding.btnRestaurant.setOnClickListener {
 
         }
 
-        btn_toy.setOnClickListener {
+        binding.btnToy.setOnClickListener {
 
         }
 
-        btn_home.setOnClickListener {
+        binding.btnHome.setOnClickListener {
 
         }
     }

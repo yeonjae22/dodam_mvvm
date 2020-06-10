@@ -1,11 +1,13 @@
 package com.yeonproject.dodam_mvvm.view.intro
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.yeonproject.dodam_mvvm.R
+import com.yeonproject.dodam_mvvm.databinding.ActivityHomeBinding
+import com.yeonproject.dodam_mvvm.view.base.BaseActivity
 
-class HomeActivity : AppCompatActivity(), HomeFragment.OnClickListener,
+class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home),
+    HomeFragment.OnClickListener,
     LanguageFragment.OnClickListener {
     override fun onClick(fragment: Fragment) {
         replace(fragment, true)
@@ -13,7 +15,6 @@ class HomeActivity : AppCompatActivity(), HomeFragment.OnClickListener,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home)
         replace(HomeFragment(), false)
     }
 
