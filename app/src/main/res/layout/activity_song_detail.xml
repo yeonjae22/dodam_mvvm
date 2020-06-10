@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <data>
-
-        <variable
-            name="songResponse"
-            type="com.yeonproject.dodam_mvvm.network.model.SongResponse" />
-    </data>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -38,7 +31,6 @@
             android:ellipsize="end"
             android:fontFamily="@font/jsdongkang_regular"
             android:maxLines="1"
-            android:text="@{songResponse.name}"
             android:textSize="28sp"
             android:textStyle="bold" />
 
@@ -51,7 +43,6 @@
             android:layout_marginEnd="10dp"
             android:fontFamily="@font/jsdongkang_regular"
             android:maxLines="2"
-            android:text="@{songResponse.id}"
             android:textSize="15sp"
             android:textStyle="bold" />
 

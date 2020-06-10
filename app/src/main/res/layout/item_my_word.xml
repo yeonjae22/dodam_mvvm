@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <data>
+
+        <variable
+            name="wordResponse"
+            type="com.yeonproject.dodam_mvvm.network.model.WordResponse" />
+    </data>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,6 +31,7 @@
 
                     <ImageView
                         android:id="@+id/iv_image"
+                        imageLoad="@{wordResponse.image}"
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:layout_margin="10dp"
@@ -50,6 +58,7 @@
                                 android:ellipsize="end"
                                 android:fontFamily="@font/jsdongkang_regular"
                                 android:maxLines="1"
+                                android:text="@{wordResponse.hangul}"
                                 android:textSize="18sp" />
 
                             <TextView
@@ -60,6 +69,7 @@
                                 android:ellipsize="end"
                                 android:fontFamily="@font/jsdongkang_regular"
                                 android:maxLines="1"
+                                android:text="@{wordResponse.english}"
                                 android:textSize="18sp" />
                         </LinearLayout>
 

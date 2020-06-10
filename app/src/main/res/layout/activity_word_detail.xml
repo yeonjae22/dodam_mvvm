@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <data>
-
-        <variable
-            name="wordItem"
-            type="com.yeonproject.dodam_mvvm.data.model.WordItem" />
-    </data>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -55,7 +48,6 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:fontFamily="@font/jsdongkang_regular"
-                    android:text="@{wordItem.name}"
                     android:textColor="@android:color/black"
                     android:textSize="52sp" />
 
