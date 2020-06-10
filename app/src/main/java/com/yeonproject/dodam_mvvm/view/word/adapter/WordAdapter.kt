@@ -2,34 +2,44 @@ package com.yeonproject.dodam_mvvm.view.word.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.yeonproject.dodam_mvvm.R
 import com.yeonproject.dodam_mvvm.data.model.WordItem
-import com.yeonproject.dodam_mvvm.ext.glideImageSet
-import kotlinx.android.synthetic.main.item_word.view.*
+import com.yeonproject.dodam_mvvm.databinding.ItemWordBinding
 
 
-class WordAdapter : RecyclerView.Adapter<WordAdapter.WordViewHolder>() {
+class WordAdapter : RecyclerView.Adapter<WordAdapter.ViewHolder>() {
 
     private var items = mutableListOf<WordItem>()
-    private var onClickListener: OnClickListener? = null
+    private lateinit var binding: ItemWordBinding
+    private lateinit var listener: OnClickListener
 
     interface OnClickListener {
         fun onClick(word: WordItem)
     }
 
     fun setOnClickListener(listener: OnClickListener) {
-        onClickListener = listener
+        this.listener = listener
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WordViewHolder =
-        WordViewHolder(parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+
+        binding = DataBindingUtil.inflate(
+            LayoutInflater.from(parent.context),
+            R.layout.item_word,
+            parent,
+            false
+        )
+
+        return ViewHolder(binding)
+    }
 
     override fun getItemCount(): Int =
         items.size
 
-    override fun onBindViewHolder(holder: WordViewHolder, position: Int) =
-        holder.bind(items[position], onClickListener)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) =
+        holder.bind(items[position], listener)
 
     fun addData(addDataList: List<WordItem>) {
         items.clear()
@@ -37,20 +47,15 @@ class WordAdapter : RecyclerView.Adapter<WordAdapter.WordViewHolder>() {
         notifyDataSetChanged()
     }
 
-    class WordViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
-        LayoutInflater.from(parent.context).inflate(R.layout.item_word, parent, false)
+    class ViewHolder(private val binding: ItemWordBinding) : RecyclerView.ViewHolder(
+        binding.root
     ) {
         fun bind(item: WordItem, listener: OnClickListener?) {
-
-            itemView.run {
-                setOnClickListener {
+            binding.run {
+                wordItem = item
+                itemView.setOnClickListener {
                     listener?.onClick(item)
                 }
-                iv_image.glideImageSet(
-                    item.image,
-                    iv_image.measuredWidth,
-                    iv_image.measuredHeight
-                )
             }
         }
     }

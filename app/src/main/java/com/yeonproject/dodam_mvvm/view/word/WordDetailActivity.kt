@@ -3,14 +3,14 @@ package com.yeonproject.dodam_mvvm.view.word
 import android.graphics.Color
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
-import androidx.appcompat.app.AppCompatActivity
-import com.yeonproject.dodam_mvvm.App
+import com.yeonproject.dodam_mvvm.util.App
 import com.yeonproject.dodam_mvvm.R
+import com.yeonproject.dodam_mvvm.databinding.ActivityWordDetailBinding
 import com.yeonproject.dodam_mvvm.ext.glideImageSet
-import kotlinx.android.synthetic.main.activity_word_detail.*
+import com.yeonproject.dodam_mvvm.view.base.BaseActivity
 import java.util.*
 
-class WordDetailActivity : AppCompatActivity() {
+class WordDetailActivity : BaseActivity<ActivityWordDetailBinding>(R.layout.activity_word_detail) {
     private val tts = TextToSpeech(App.instance.context(), TextToSpeech.OnInitListener {
         if (it != TextToSpeech.ERROR) {
             setting()
@@ -19,41 +19,38 @@ class WordDetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_word_detail)
         var myPaint = WordPaint(this)
-        linear.addView(myPaint)
+        binding.linear.addView(myPaint)
 
-        tv_name.text = intent.getStringExtra(NAME).toLowerCase()
-        iv_image.glideImageSet(
-            intent.getStringExtra(IMAGE),
-            iv_image.measuredWidth,
-            iv_image.measuredHeight
+        binding.tvName.text = intent.getStringExtra(NAME).toLowerCase()
+        binding.ivImage.glideImageSet(
+            intent.getStringExtra(IMAGE)
         )
 
-        btn_sound.setOnClickListener {
-            tts.speak(tv_name.text.toString(), TextToSpeech.QUEUE_FLUSH, null, null)
+        binding.btnSound.setOnClickListener {
+            tts.speak(binding.tvName.text.toString(), TextToSpeech.QUEUE_FLUSH, null, null)
         }
 
-        btn_back.setOnClickListener {
+        binding.btnBack.setOnClickListener {
             finish()
         }
 
-        btn_red.setOnClickListener {
+        binding.btnRed.setOnClickListener {
             myPaint.setColor(Color.RED)
         }
 
-        btn_blue.setOnClickListener {
+        binding.btnBlue.setOnClickListener {
             myPaint.setColor(Color.BLUE)
         }
 
-        btn_black.setOnClickListener {
+        binding.btnBlack.setOnClickListener {
             myPaint.setColor(Color.BLACK)
         }
 
-        btn_eraser.setOnClickListener {
-            linear.removeAllViews()
+        binding.btnEraser.setOnClickListener {
+            binding.linear.removeAllViews()
             myPaint = WordPaint(this)
-            linear.addView(myPaint)
+            binding.linear.addView(myPaint)
         }
     }
 
@@ -65,9 +62,9 @@ class WordDetailActivity : AppCompatActivity() {
 
     private fun setting() {
         val language = intent.getStringExtra(LANGUAGE)
-        if(language == "hangul"){
+        if (language == "hangul") {
             tts.language = Locale.KOREA
-        } else if(language == "english"){
+        } else if (language == "english") {
             tts.language = Locale.ENGLISH
         }
         tts.setPitch(1.0f)
