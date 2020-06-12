@@ -2,32 +2,31 @@ package com.yeonproject.dodam_mvvm.view.song
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import com.yeonproject.dodam_mvvm.R
-import kotlinx.android.synthetic.main.activity_song_detail.*
+import com.yeonproject.dodam_mvvm.databinding.ActivitySongDetailBinding
+import com.yeonproject.dodam_mvvm.view.base.BaseActivity
 
-class SongDetailActivity : AppCompatActivity() {
+class SongDetailActivity : BaseActivity<ActivitySongDetailBinding>(R.layout.activity_song_detail) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_song_detail)
         val id = intent.getStringExtra(ID)
         val name = intent.getStringExtra(NAME)
 
-        tv_name.text = name
-        tv_link.text = "www.youtube.com/watch?v=$id"
+        binding.tvName.text = name
+        binding.tvLink.text = "www.youtube.com/watch?v=$id"
 
-        val youTubePlayerView = you_tube_player_view
+        val youTubePlayerView = binding.youTubePlayerView
         if (id != null) {
             youTubePlayerView.play(id)
         }
 
-        btn_back.setOnClickListener {
+        binding.btnBack.setOnClickListener {
             finish()
         }
 
-        tv_link.setOnClickListener {
+        binding.tvLink.setOnClickListener {
             val intent = Intent(this, SongWebViewActivity::class.java)
-            intent.putExtra(LINK, tv_link.text.toString())
+            intent.putExtra(LINK, binding.tvLink.text.toString())
             startActivity(intent)
         }
     }

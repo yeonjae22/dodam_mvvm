@@ -3,14 +3,14 @@ package com.yeonproject.dodam_mvvm.view.song
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.webkit.WebChromeClient
-import androidx.appcompat.app.AppCompatActivity
 import com.yeonproject.dodam_mvvm.R
-import kotlinx.android.synthetic.main.activity_song_web_view.*
+import com.yeonproject.dodam_mvvm.databinding.ActivitySongWebViewBinding
+import com.yeonproject.dodam_mvvm.view.base.BaseActivity
 
-class SongWebViewActivity : AppCompatActivity() {
+class SongWebViewActivity :
+    BaseActivity<ActivitySongWebViewBinding>(R.layout.activity_song_web_view) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_song_web_view)
         val uri = intent.getStringExtra(LINK)
         setWebView("https://$uri")
         finish()
@@ -18,7 +18,7 @@ class SongWebViewActivity : AppCompatActivity() {
 
     @SuppressLint("SetJavaScriptEnabled")
     fun setWebView(uri: String) {
-        web_view.run {
+        binding.webView.run {
             webChromeClient = WebChromeClient()
             settings.setSupportMultipleWindows(true)
             settings.javaScriptEnabled = true

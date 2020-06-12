@@ -2,33 +2,43 @@ package com.yeonproject.dodam_mvvm.view.song.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.yeonproject.dodam_mvvm.R
-import com.yeonproject.dodam_mvvm.ext.glideImageSet
+import com.yeonproject.dodam_mvvm.databinding.ItemSongBinding
 import com.yeonproject.dodam_mvvm.network.model.SongResponse
-import kotlinx.android.synthetic.main.item_song.view.*
 
 
-class SongAdapter : RecyclerView.Adapter<SongAdapter.SongViewHolder>() {
+class SongAdapter : RecyclerView.Adapter<SongAdapter.ViewHolder>() {
     private var items = mutableListOf<SongResponse>()
-    private var onClickListener: OnClickListener? = null
+    private lateinit var binding: ItemSongBinding
+    private lateinit var listener: OnClickListener
 
     interface OnClickListener {
         fun onClick(song: SongResponse)
     }
 
     fun setOnClickListener(listener: OnClickListener) {
-        onClickListener = listener
+        this.listener = listener
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder =
-        SongViewHolder(parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+
+        binding = DataBindingUtil.inflate(
+            LayoutInflater.from(parent.context),
+            R.layout.item_song,
+            parent,
+            false
+        )
+
+        return ViewHolder(binding)
+    }
 
     override fun getItemCount(): Int =
         items.size
 
-    override fun onBindViewHolder(holder: SongViewHolder, position: Int) =
-        holder.bind(items[position], onClickListener)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) =
+        holder.bind(items[position], listener)
 
     fun addData(addDataList: List<SongResponse>) {
         items.clear()
@@ -36,20 +46,15 @@ class SongAdapter : RecyclerView.Adapter<SongAdapter.SongViewHolder>() {
         notifyDataSetChanged()
     }
 
-    class SongViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
-        LayoutInflater.from(parent.context).inflate(R.layout.item_song, parent, false)
+    class ViewHolder(private val binding: ItemSongBinding) : RecyclerView.ViewHolder(
+        binding.root
     ) {
         fun bind(item: SongResponse, listener: OnClickListener?) {
-            itemView.run {
-                setOnClickListener {
+            binding.run {
+                songResponse = item
+                itemView.setOnClickListener {
                     listener?.onClick(item)
                 }
-                iv_image.glideImageSet(
-                    item.image,
-                    iv_image.measuredWidth,
-                    iv_image.measuredHeight
-                )
-                tv_name.text = item.name
             }
         }
     }

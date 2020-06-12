@@ -3,39 +3,30 @@ package com.yeonproject.dodam_mvvm.view.song
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.yeonproject.dodam_mvvm.Injection
-import com.yeonproject.dodam_mvvm.network.model.SongResponse
-import com.yeonproject.dodam_mvvm.view.song.adapter.SongAdapter
-import com.yeonproject.dodam_mvvm.view.song.presenter.SongContract
-import com.yeonproject.dodam_mvvm.view.song.presenter.SongPresenter
 import com.yeonproject.dodam_mvvm.R
-import kotlinx.android.synthetic.main.activity_song_list.*
+import com.yeonproject.dodam_mvvm.databinding.ActivitySongListBinding
+import com.yeonproject.dodam_mvvm.network.model.SongResponse
+import com.yeonproject.dodam_mvvm.view.base.BaseActivity
+import com.yeonproject.dodam_mvvm.view.song.adapter.SongAdapter
+import com.yeonproject.dodam_mvvm.view.view_model.SongViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SongListActivity : AppCompatActivity(), SongContract.View {
-    override lateinit var presenter: SongContract.Presenter
+class SongListActivity : BaseActivity<ActivitySongListBinding>(R.layout.activity_song_list) {
     private var songAdapter = SongAdapter()
-
-    override fun showSongList(items: List<SongResponse>) {
-        layout_progress_bar.visibility = View.GONE
-        layout_song_list.visibility = View.VISIBLE
-        songAdapter.addData(items)
-    }
+    private val viewModel by viewModel<SongViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_song_list)
-        presenter = SongPresenter(
-            Injection.songRepository(), this
-        )
-        presenter.getSongList()
+        viewModel.getSongList()
+        setupViewModel()
 
-        btn_back.setOnClickListener {
+        binding.btnBack.setOnClickListener {
             finish()
         }
 
-        rv_song_list?.apply {
+        binding.rvSongList.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = songAdapter
         }
@@ -48,6 +39,14 @@ class SongListActivity : AppCompatActivity(), SongContract.View {
                 intent.putExtra(NAME, song.name)
                 startActivity(intent)
             }
+        })
+    }
+
+    private fun setupViewModel() {
+        viewModel.songList.observe(this, Observer {
+            binding.layoutProgressBar.visibility = View.GONE
+            binding.layoutSongList.visibility = View.VISIBLE
+            songAdapter.addData(it)
         })
     }
 
