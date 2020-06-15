@@ -6,45 +6,43 @@ import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import com.kroegerama.imgpicker.BottomSheetImagePicker
 import com.kroegerama.imgpicker.ButtonType
-import com.yeonproject.dodam_mvvm.Injection
-import com.yeonproject.dodam_mvvm.data.room.entity.MyWordEntity
+import com.yeonproject.dodam_mvvm.R
+import com.yeonproject.dodam_mvvm.databinding.FragmentWordModifyBinding
 import com.yeonproject.dodam_mvvm.ext.glideImageSet
 import com.yeonproject.dodam_mvvm.ext.shortToast
-import com.yeonproject.dodam_mvvm.view.my_word.presenter.WordModifyContract
-import com.yeonproject.dodam_mvvm.view.my_word.presenter.WordModifyPresenter
-import com.yeonproject.dodam_mvvm.R
-import kotlinx.android.synthetic.main.fragment_word_modify.*
+import com.yeonproject.dodam_mvvm.view.base.BaseFragment
+import com.yeonproject.dodam_mvvm.view.view_model.MyWordViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
 
-class WordModifyFragment : Fragment(), WordModifyContract.View,
+class WordModifyFragment : BaseFragment<FragmentWordModifyBinding>(R.layout.fragment_word_modify),
     BottomSheetImagePicker.OnImagesSelectedListener {
     private val dispatcher by lazy {
         requireActivity().onBackPressedDispatcher
     }
-    override lateinit var presenter: WordModifyContract.Presenter
     private var wordNumber: Int = 0
     private var imageName: String = ""
     private var savedImageName: String = ""
     private var imageUri: Uri? = null
+    private val viewModel by viewModel<MyWordViewModel>()
 
     override fun onImagesSelected(uris: List<Uri>, tag: String?) {
-        imageContainer.removeAllViews()
+        binding.imageContainer.removeAllViews()
         uris.forEach { uri ->
             val iv = LayoutInflater.from(context).inflate(
                 R.layout.scrollitem_image,
-                imageContainer,
+                binding.imageContainer,
                 false
             ) as ImageView
-            imageContainer.addView(iv)
+            binding.imageContainer.addView(iv)
             iv.findViewById<ImageView>(R.id.iv_image).run {
-                glideImageSet(uri, measuredWidth, measuredHeight)
+                glideImageSet(uri)
             }
         }
         if (!uris[0].path.isNullOrEmpty()) {
@@ -52,90 +50,87 @@ class WordModifyFragment : Fragment(), WordModifyContract.View,
             imageUri = uris[0]
         }
 
-        ib_delete.visibility = View.VISIBLE
-        ib_image.visibility = View.GONE
+        binding.ibDelete.visibility = View.VISIBLE
+        binding.ibImage.visibility = View.GONE
     }
-
-    override fun showMyWord(response: MyWordEntity) {
-        edt_hangul_name.text = SpannableStringBuilder(response.hangul)
-        edt_english_name.text = SpannableStringBuilder(response.english)
-        imageContainer.removeAllViews()
-        val iv = LayoutInflater.from(context).inflate(
-            R.layout.scrollitem_image,
-            imageContainer,
-            false
-        ) as ImageView
-        imageContainer.addView(iv)
-        val image = context?.filesDir?.absoluteFile.toString() + "/" + response.image
-        iv.findViewById<ImageView>(R.id.iv_image).run {
-            glideImageSet(image, measuredWidth, measuredHeight)
-        }
-        savedImageName = response.image
-    }
-
-    override fun showModifyResult(response: Boolean) {
-        if (response) {
-            context?.shortToast(R.string.success_update_word)
-            dispatcher.onBackPressed()
-        }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_word_modify, container, false)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        ib_delete.visibility = View.VISIBLE
-        ib_image.visibility = View.GONE
+        binding.ibDelete.visibility = View.VISIBLE
+        binding.ibImage.visibility = View.GONE
         wordNumber = arguments?.getInt(WORD_NUMBER) ?: 0
-        presenter = WordModifyPresenter(
-            Injection.myWordRepository(), this
-        )
-        presenter.getMyWord(wordNumber)
+        viewModel.getMyWord(wordNumber)
+        showMyWord()
 
-        ib_delete.setOnClickListener {
+        binding.ibDelete.setOnClickListener {
             savedImageName = ""
-            imageContainer.removeAllViews()
-            ib_delete.visibility = View.GONE
-            ib_image.visibility = View.VISIBLE
+            binding.imageContainer.removeAllViews()
+            binding.ibDelete.visibility = View.GONE
+            binding.ibImage.visibility = View.VISIBLE
         }
 
-        ib_image.setOnClickListener {
+        binding.ibImage.setOnClickListener {
             pickSingle()
         }
 
-        btn_back.setOnClickListener {
+        binding.btnBack.setOnClickListener {
             dispatcher.onBackPressed()
         }
 
-        btn_modify.setOnClickListener {
+        binding.btnModify.setOnClickListener {
             when {
-                "${edt_hangul_name.text}".isEmpty() -> context?.shortToast(R.string.enter_hangul)
-                "${edt_english_name.text}".isEmpty() -> context?.shortToast(R.string.enter_english)
+                "${binding.edtHangulName.text}".isEmpty() -> context?.shortToast(R.string.enter_hangul)
+                "${binding.edtEnglishName.text}".isEmpty() -> context?.shortToast(R.string.enter_english)
                 else -> {
                     if (imageName == "" && savedImageName == "") {
                         context?.shortToast(R.string.select_image)
                     } else if (imageName == "" && savedImageName != "") {
-                        presenter.updateMyWord(
+                        viewModel.updateMyWord(
                             wordNumber,
-                            "${edt_hangul_name.text}",
-                            "${edt_english_name.text}"
+                            "${binding.edtHangulName.text}",
+                            "${binding.edtEnglishName.text}"
                         )
+                        showMessage()
                     } else {
                         createFile()
-                        presenter.updateMyWord(
+                        viewModel.updateMyWord(
                             wordNumber,
-                            "${edt_hangul_name.text}",
-                            "${edt_english_name.text}",
+                            "${binding.edtHangulName.text}",
+                            "${binding.edtEnglishName.text}",
                             imageName
                         )
                     }
                 }
             }
         }
+    }
+
+    private fun showMyWord() {
+        viewModel.myWord.observe(viewLifecycleOwner, Observer {
+            binding.edtHangulName.text = SpannableStringBuilder(it.hangul)
+            binding.edtEnglishName.text = SpannableStringBuilder(it.english)
+            binding.imageContainer.removeAllViews()
+            val iv = LayoutInflater.from(context).inflate(
+                R.layout.scrollitem_image,
+                binding.imageContainer,
+                false
+            ) as ImageView
+            binding.imageContainer.addView(iv)
+            val image = context?.filesDir?.absoluteFile.toString() + "/" + it.image
+            iv.findViewById<ImageView>(R.id.iv_image).run {
+                glideImageSet(image)
+            }
+            savedImageName = it.image
+        })
+    }
+
+    private fun showMessage() {
+        viewModel.result.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                context?.shortToast(R.string.success_update_word)
+                dispatcher.onBackPressed()
+            }
+        })
     }
 
     private fun pickSingle() {

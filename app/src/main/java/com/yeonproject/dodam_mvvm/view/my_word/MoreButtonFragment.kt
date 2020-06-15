@@ -5,29 +5,32 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.yeonproject.dodam_mvvm.R
-import kotlinx.android.synthetic.main.fragment_more_button.*
+import com.yeonproject.dodam_mvvm.databinding.FragmentMoreButtonBinding
 
 
 class MoreButtonFragment : BottomSheetDialogFragment() {
-
+    lateinit var binding: FragmentMoreButtonBinding
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_more_button, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_more_button, container, false)
+        binding.lifecycleOwner = (this)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        btn_modify.setOnClickListener {
+        binding.btnModify.setOnClickListener {
             targetFragment?.onActivityResult(REQUEST_CODE, MODIFY_RESULT_CODE, Intent())
             dismiss()
         }
-        btn_delete.setOnClickListener {
+        binding.btnDelete.setOnClickListener {
             targetFragment?.onActivityResult(REQUEST_CODE, DELETE_RESULT_CODE, Intent())
             dismiss()
         }

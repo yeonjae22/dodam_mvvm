@@ -3,35 +3,28 @@ package com.yeonproject.dodam_mvvm.view.my_word
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.yeonproject.dodam_mvvm.Injection
-import com.yeonproject.dodam_mvvm.data.room.entity.MyWordEntity
-import com.yeonproject.dodam_mvvm.ext.shortToast
-import com.yeonproject.dodam_mvvm.view.my_word.adapter.MyWordModifyAdapter
-import com.yeonproject.dodam_mvvm.view.my_word.presenter.MyWordListContract
-import com.yeonproject.dodam_mvvm.view.my_word.presenter.MyWordListPresenter
 import com.yeonproject.dodam_mvvm.R
-import kotlinx.android.synthetic.main.fragment_my_word_list.*
+import com.yeonproject.dodam_mvvm.data.room.entity.MyWordEntity
+import com.yeonproject.dodam_mvvm.databinding.FragmentMyWordListBinding
+import com.yeonproject.dodam_mvvm.ext.shortToast
+import com.yeonproject.dodam_mvvm.view.base.BaseFragment
+import com.yeonproject.dodam_mvvm.view.my_word.adapter.MyWordModifyAdapter
+import com.yeonproject.dodam_mvvm.view.view_model.MyWordViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class MyWordListFragment : Fragment(), MyWordListContract.View {
+class MyWordListFragment : BaseFragment<FragmentMyWordListBinding>(R.layout.fragment_my_word_list) {
     private val dispatcher by lazy {
         requireActivity().onBackPressedDispatcher
     }
-    override lateinit var presenter: MyWordListContract.Presenter
     private val myWordAdapter = MyWordModifyAdapter()
     private lateinit var listener: OnClickListener
     lateinit var myWordEntity: MyWordEntity
-
-    override fun showDeleteResult(response: Boolean) {
-        if (response) {
-            context?.shortToast(R.string.success_delete_word)
-        }
-    }
+    private val viewModel by viewModel<MyWordViewModel>()
 
     interface OnClickListener {
         fun onClick(fragment: Fragment)
@@ -42,34 +35,13 @@ class MyWordListFragment : Fragment(), MyWordListContract.View {
         listener = (context as OnClickListener)
     }
 
-    override fun showMyWordList(response: List<MyWordEntity>) {
-        if (response.isEmpty()) {
-            layout_progress_bar.visibility = View.GONE
-            layout_has_my_word.visibility = View.GONE
-            layout_no_my_word.visibility = View.VISIBLE
-        } else {
-            layout_progress_bar.visibility = View.GONE
-            layout_has_my_word.visibility = View.VISIBLE
-            layout_no_my_word.visibility = View.GONE
-            myWordAdapter.addData(response)
-        }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_my_word_list, container, false)
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        presenter = MyWordListPresenter(
-            Injection.myWordRepository(), this
-        )
-        presenter.getMyWordList()
+        viewModel.getMyWordList()
+        showMyWordList()
         setAdapter()
 
-        btn_back.setOnClickListener {
+        binding.btnBack.setOnClickListener {
             dispatcher.onBackPressed()
         }
 
@@ -94,15 +66,39 @@ class MyWordListFragment : Fragment(), MyWordListContract.View {
             if (resultCode == MODIFY_RESULT_CODE) {
                 listener.onClick(WordModifyFragment.newInstance(myWordEntity.wordNumber))
             } else if (resultCode == DELETE_RESULT_CODE) {
-                presenter.deleteMyWord(myWordEntity.wordNumber)
+                viewModel.deleteMyWord(myWordEntity.wordNumber)
+                showMessage()
                 myWordAdapter.removeData(myWordEntity)
             }
         }
     }
 
+    private fun showMessage() {
+        viewModel.result.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                context?.shortToast(R.string.success_delete_word)
+            }
+        })
+    }
+
+    private fun showMyWordList() {
+        viewModel.myWordList.observe(viewLifecycleOwner, Observer {
+            if (it.isEmpty()) {
+                binding.layoutProgressBar.visibility = View.GONE
+                binding.layoutHasMyWord.visibility = View.GONE
+                binding.layoutNoMyWord.visibility = View.VISIBLE
+            } else {
+                binding.layoutProgressBar.visibility = View.GONE
+                binding.layoutHasMyWord.visibility = View.VISIBLE
+                binding.layoutNoMyWord.visibility = View.GONE
+                myWordAdapter.addData(it)
+            }
+        })
+    }
+
     private fun setAdapter() {
-        recycler_my_word.layoutManager = LinearLayoutManager(context)
-        recycler_my_word.adapter = myWordAdapter
+        binding.recyclerMyWord.layoutManager = LinearLayoutManager(context)
+        binding.recyclerMyWord.adapter = myWordAdapter
     }
 
     companion object {

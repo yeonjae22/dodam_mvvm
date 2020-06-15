@@ -2,27 +2,25 @@ package com.yeonproject.dodam_mvvm.view.my_word
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
-import com.yeonproject.dodam_mvvm.Injection
-import com.yeonproject.dodam_mvvm.data.room.entity.MyWordEntity
-import com.yeonproject.dodam_mvvm.view.my_word.adapter.MyWordAdapter
-import com.yeonproject.dodam_mvvm.view.my_word.presenter.MyWordContract
-import com.yeonproject.dodam_mvvm.view.my_word.presenter.MyWordPresenter
 import com.yeonproject.dodam_mvvm.R
-import kotlinx.android.synthetic.main.fragment_my_word.*
+import com.yeonproject.dodam_mvvm.data.room.entity.MyWordEntity
+import com.yeonproject.dodam_mvvm.databinding.FragmentMyWordBinding
+import com.yeonproject.dodam_mvvm.view.base.BaseFragment
+import com.yeonproject.dodam_mvvm.view.my_word.adapter.MyWordAdapter
+import com.yeonproject.dodam_mvvm.view.view_model.MyWordViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MyWordFragment : Fragment(), MyWordContract.View {
+class MyWordFragment : BaseFragment<FragmentMyWordBinding>(R.layout.fragment_my_word) {
     private val dispatcher by lazy {
         requireActivity().onBackPressedDispatcher
     }
-    override lateinit var presenter: MyWordContract.Presenter
     private lateinit var language: String
     private lateinit var listener: OnClickListener
     private var myWordAdapter = MyWordAdapter()
+    private val viewModel by viewModel<MyWordViewModel>()
 
     interface OnClickListener {
         fun onClick(fragment: Fragment)
@@ -33,27 +31,19 @@ class MyWordFragment : Fragment(), MyWordContract.View {
         listener = (context as OnClickListener)
     }
 
-    override fun showMyWordList(response: List<MyWordEntity>) {
-        myWordAdapter.addData(response)
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_my_word, container, false)
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         language = arguments?.getString(LANGUAGE) ?: ""
-        presenter = MyWordPresenter(Injection.myWordRepository(), this)
-        presenter.getMyWordList()
-        rv_my_word_list?.apply {
+
+        viewModel.getMyWordList()
+        setupViewModel()
+
+        binding.rvMyWordList.apply {
             layoutManager = GridLayoutManager(context, 2)
             adapter = myWordAdapter
         }
 
-        btn_back.setOnClickListener {
+        binding.btnBack.setOnClickListener {
             dispatcher.onBackPressed()
         }
 
@@ -61,12 +51,30 @@ class MyWordFragment : Fragment(), MyWordContract.View {
             MyWordAdapter.OnClickListener {
             override fun onClick(word: MyWordEntity) {
                 if (language == HANGUL) {
-                    listener.onClick(MyWordDetailFragment.newInstance(language, word.hangul, word.image))
+                    listener.onClick(
+                        MyWordDetailFragment.newInstance(
+                            language,
+                            word.hangul,
+                            word.image
+                        )
+                    )
                 } else if (language == ENGLISH) {
-                    listener.onClick(MyWordDetailFragment.newInstance(language, word.english, word.image))
+                    listener.onClick(
+                        MyWordDetailFragment.newInstance(
+                            language,
+                            word.english,
+                            word.image
+                        )
+                    )
                 }
 
             }
+        })
+    }
+
+    private fun setupViewModel() {
+        viewModel.myWordList.observe(this, Observer {
+            myWordAdapter.addData(it)
         })
     }
 

@@ -1,11 +1,13 @@
 package com.yeonproject.dodam_mvvm.view.my_word
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.yeonproject.dodam_mvvm.R
+import com.yeonproject.dodam_mvvm.databinding.ActivityMyWordMenuBinding
+import com.yeonproject.dodam_mvvm.view.base.BaseActivity
 
-class MyWordMenuActivity : AppCompatActivity(), MyWordMenuFragment.OnClickListener,
+class MyWordMenuActivity : BaseActivity<ActivityMyWordMenuBinding>(R.layout.activity_my_word_menu),
+    MyWordMenuFragment.OnClickListener,
     MyWordListFragment.OnClickListener, MyWordLanguageFragment.OnClickListener,
     MyWordFragment.OnClickListener, MyWordDetailFragment.OnClickListener {
 
@@ -15,7 +17,6 @@ class MyWordMenuActivity : AppCompatActivity(), MyWordMenuFragment.OnClickListen
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_my_word_menu)
         replace(MyWordMenuFragment(), false)
     }
 

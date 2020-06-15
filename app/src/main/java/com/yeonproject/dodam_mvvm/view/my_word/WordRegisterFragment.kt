@@ -5,103 +5,98 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import com.kroegerama.imgpicker.BottomSheetImagePicker
 import com.kroegerama.imgpicker.ButtonType
-import com.yeonproject.dodam_mvvm.Injection
+import com.yeonproject.dodam_mvvm.R
+import com.yeonproject.dodam_mvvm.databinding.FragmentWordRegisterBinding
 import com.yeonproject.dodam_mvvm.ext.glideImageSet
 import com.yeonproject.dodam_mvvm.ext.shortToast
-import com.yeonproject.dodam_mvvm.view.my_word.presenter.WordRegisterContract
-import com.yeonproject.dodam_mvvm.view.my_word.presenter.WordRegisterPresenter
-import com.yeonproject.dodam_mvvm.R
-import kotlinx.android.synthetic.main.fragment_word_register.*
-import kotlinx.android.synthetic.main.scrollitem_image.view.*
+import com.yeonproject.dodam_mvvm.view.base.BaseFragment
+import com.yeonproject.dodam_mvvm.view.view_model.MyWordViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
 
 
-class WordRegisterFragment : Fragment(), BottomSheetImagePicker.OnImagesSelectedListener,
-    WordRegisterContract.View {
+class WordRegisterFragment :
+    BaseFragment<FragmentWordRegisterBinding>(R.layout.fragment_word_register),
+    BottomSheetImagePicker.OnImagesSelectedListener {
     private val dispatcher by lazy {
         requireActivity().onBackPressedDispatcher
     }
-    override lateinit var presenter: WordRegisterContract.Presenter
     private var imageName: String = ""
     private var imageUri: Uri? = null
-
-    override fun showMessage(response: Boolean) {
-        if (response) {
-            context?.shortToast(R.string.success_register_word)
-            dispatcher.onBackPressed()
-        }
-    }
+    private val viewModel by viewModel<MyWordViewModel>()
 
     override fun onImagesSelected(uris: List<Uri>, tag: String?) {
-        imageContainer.removeAllViews()
+        binding.imageContainer.removeAllViews()
         uris.forEach { uri ->
             val iv = LayoutInflater.from(context).inflate(
                 R.layout.scrollitem_image,
-                imageContainer,
+                binding.imageContainer,
                 false
             ) as ImageView
-            imageContainer.addView(iv)
-            iv.iv_image.glideImageSet(uri, iv.iv_image.measuredWidth, iv.iv_image.measuredHeight)
+            binding.imageContainer.addView(iv)
+            iv.findViewById<ImageView>(R.id.iv_image).run {
+                glideImageSet(uri)
+            }
         }
         if (!uris[0].path.isNullOrEmpty()) {
             imageName = uris[0].path.toString().split("/").last()
             imageUri = uris[0]
         }
 
-        ib_delete.visibility = View.VISIBLE
-        ib_image.visibility = View.GONE
-        ib_delete.setOnClickListener {
+        binding.ibDelete.visibility = View.VISIBLE
+        binding.ibImage.visibility = View.GONE
+        binding.ibDelete.setOnClickListener {
             imageName = ""
             imageUri = null
-            imageContainer.removeAllViews()
-            ib_delete.visibility = View.GONE
-            ib_image.visibility = View.VISIBLE
+            binding.imageContainer.removeAllViews()
+            binding.ibDelete.visibility = View.GONE
+            binding.ibImage.visibility = View.VISIBLE
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_word_register, container, false)
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        presenter = WordRegisterPresenter(
-            Injection.myWordRepository(), this
-        )
 
-        ib_image.setOnClickListener {
+        binding.ibImage.setOnClickListener {
             pickSingle()
         }
 
-        btn_back.setOnClickListener {
+        binding.btnBack.setOnClickListener {
             dispatcher.onBackPressed()
         }
 
-        btn_register.setOnClickListener {
+        binding.btnRegister.setOnClickListener {
             when {
-                "${edt_hangul_name.text}".isEmpty() -> context?.shortToast(R.string.enter_hangul)
-                "${edt_english_name.text}".isEmpty() -> context?.shortToast(R.string.enter_english)
+                "${binding.edtHangulName.text}".isEmpty() -> context?.shortToast(R.string.enter_hangul)
+                "${binding.edtEnglishName.text}".isEmpty() -> context?.shortToast(R.string.enter_english)
                 imageName.isEmpty() -> context?.shortToast(R.string.select_image)
                 else -> {
                     createFile()
-                    presenter.createMyWord(
+                    viewModel.createMyWord(
                         0,
-                        "${edt_hangul_name.text}",
-                        "${edt_english_name.text}",
+                        "${binding.edtHangulName.text}",
+                        "${binding.edtEnglishName.text}",
                         imageName
                     )
+                    showMessage()
                 }
             }
         }
+    }
+
+    private fun showMessage() {
+        viewModel.result.observe(viewLifecycleOwner, Observer {
+            if (it) {
+                context?.shortToast(R.string.success_register_word)
+                dispatcher.onBackPressed()
+            }
+        })
     }
 
     private fun pickSingle() {

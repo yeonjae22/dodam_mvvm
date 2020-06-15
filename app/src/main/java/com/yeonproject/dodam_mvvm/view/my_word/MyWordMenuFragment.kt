@@ -2,14 +2,12 @@ package com.yeonproject.dodam_mvvm.view.my_word
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.yeonproject.dodam_mvvm.R
-import kotlinx.android.synthetic.main.fragment_my_word_menu.*
+import com.yeonproject.dodam_mvvm.databinding.FragmentMyWordMenuBinding
+import com.yeonproject.dodam_mvvm.view.base.BaseFragment
 
-class MyWordMenuFragment : Fragment() {
+class MyWordMenuFragment : BaseFragment<FragmentMyWordMenuBinding>(R.layout.fragment_my_word_menu) {
     private val dispatcher by lazy {
         requireActivity().onBackPressedDispatcher
     }
@@ -23,29 +21,23 @@ class MyWordMenuFragment : Fragment() {
         super.onAttach(context)
         listener = (context as OnClickListener)
     }
-    
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_my_word_menu, container, false)
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        btn_back.setOnClickListener {
+        binding.btnBack.setOnClickListener {
             dispatcher.onBackPressed()
         }
 
-        btn_register.setOnClickListener {
+        binding.btnRegister.setOnClickListener {
             listener.onClick(WordRegisterFragment())
         }
 
-        btn_modify.setOnClickListener {
+        binding.btnModify.setOnClickListener {
             listener.onClick(MyWordListFragment())
         }
 
-        btn_learning.setOnClickListener {
+        binding.btnLearning.setOnClickListener {
             listener.onClick(MyWordLanguageFragment())
         }
     }
