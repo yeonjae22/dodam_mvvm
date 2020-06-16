@@ -4,7 +4,7 @@ import com.yeonproject.dodam_mvvm.data.repository.Callback
 import com.yeonproject.dodam_mvvm.data.room.entity.MyWordEntity
 import com.yeonproject.dodam_mvvm.data.source.local.my_word.MyWordLocalDataSource
 
-class MyWordRepositoryImpl private constructor(private val localDataSource: MyWordLocalDataSource) :
+class MyWordRepositoryImpl(private val localDataSource: MyWordLocalDataSource) :
     MyWordRepository {
     override fun createMyWord(
         wordNumber: Int,

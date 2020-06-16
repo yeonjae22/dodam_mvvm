@@ -4,7 +4,7 @@ import com.yeonproject.dodam_mvvm.data.repository.Callback
 import com.yeonproject.dodam_mvvm.data.source.remote.song.SongRemoteDataSource
 import com.yeonproject.dodam_mvvm.network.model.SongResponse
 
-class SongRepositoryImpl private constructor(private val remoteDataSource: SongRemoteDataSource) :
+class SongRepositoryImpl(private val remoteDataSource: SongRemoteDataSource) :
     SongRepository {
     override fun getSongList(callback: Callback<List<SongResponse>>) {
         remoteDataSource.getSongList(callback)

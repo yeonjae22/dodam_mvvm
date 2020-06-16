@@ -8,7 +8,7 @@ import com.google.firebase.database.ValueEventListener
 import com.yeonproject.dodam_mvvm.data.repository.Callback
 import com.yeonproject.dodam_mvvm.network.model.SongResponse
 
-class SongRemoteDataSourceImpl private constructor() :
+class SongRemoteDataSourceImpl :
     SongRemoteDataSource {
     private var database = FirebaseDatabase.getInstance()
 

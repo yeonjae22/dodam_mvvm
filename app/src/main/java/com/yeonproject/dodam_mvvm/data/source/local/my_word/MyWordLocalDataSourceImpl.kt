@@ -5,7 +5,7 @@ import com.yeonproject.dodam_mvvm.data.room.database.MyWordDatabase
 import com.yeonproject.dodam_mvvm.data.room.entity.MyWordEntity
 import com.yeonproject.dodam_mvvm.util.AppExecutors
 
-class MyWordLocalDataSourceImpl private constructor(
+class MyWordLocalDataSourceImpl(
     private val appExecutors: AppExecutors,
     private val myWordDatabase: MyWordDatabase
 ) :

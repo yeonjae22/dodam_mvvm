@@ -8,7 +8,7 @@ import com.google.firebase.database.ValueEventListener
 import com.yeonproject.dodam_mvvm.data.repository.Callback
 import com.yeonproject.dodam_mvvm.network.model.WordResponse
 
-class WordRemoteDataSourceImpl private constructor() :
+class WordRemoteDataSourceImpl :
     WordRemoteDataSource {
     private var database = FirebaseDatabase.getInstance()
 
