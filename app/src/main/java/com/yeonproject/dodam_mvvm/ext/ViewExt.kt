@@ -4,20 +4,23 @@ import android.content.Context
 import android.net.Uri
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 
-fun ImageView.glideImageSet(image: String, width: Int, height: Int) {
+@BindingAdapter("imageLoad")
+fun ImageView.glideImageSet(image: String) {
     Glide.with(context)
         .load(image)
-        .override(width, height)
+        .override(measuredWidth, measuredHeight)
         .centerCrop()
         .into(this)
 }
 
-fun ImageView.glideImageSet(image: Uri, width: Int, height: Int) {
+@BindingAdapter("imageLoad")
+fun ImageView.glideImageSet(image: Uri) {
     Glide.with(context)
         .load(image)
-        .override(width, height)
+        .override(measuredWidth, measuredHeight)
         .centerCrop()
         .into(this)
 }
