@@ -3,10 +3,10 @@ package com.yeonproject.dodam_mvvm.view.review
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
-import com.bumptech.glide.Glide
 import com.yeonproject.dodam_mvvm.R
 import com.yeonproject.dodam_mvvm.data.model.WordItem
 import com.yeonproject.dodam_mvvm.databinding.FragmentReviewBinding
+import com.yeonproject.dodam_mvvm.ext.glideImageSet
 import com.yeonproject.dodam_mvvm.ext.shortToast
 import com.yeonproject.dodam_mvvm.view.base.BaseFragment
 import com.yeonproject.dodam_mvvm.view.view_model.WordViewModel
@@ -57,9 +57,10 @@ class ReviewFragment : BaseFragment<FragmentReviewBinding>(R.layout.fragment_rev
                 }
                 i++
             }
-            Glide.with(this)
-                .load(reviewList[0].image)
-                .into(binding.ivImage)
+
+            binding.ivImage.glideImageSet(
+                reviewList[0].image
+            )
 
             while (k < 4) {
                 val a = random.nextInt(4)
