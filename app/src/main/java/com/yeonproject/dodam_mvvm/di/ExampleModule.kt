@@ -12,6 +12,7 @@ import com.yeonproject.dodam_mvvm.data.source.remote.song.SongRemoteDataSource
 import com.yeonproject.dodam_mvvm.data.source.remote.song.SongRemoteDataSourceImpl
 import com.yeonproject.dodam_mvvm.data.source.remote.word.WordRemoteDataSource
 import com.yeonproject.dodam_mvvm.data.source.remote.word.WordRemoteDataSourceImpl
+import com.yeonproject.dodam_mvvm.view.view_model.MyWordViewModel
 import com.yeonproject.dodam_mvvm.view.view_model.SongViewModel
 import com.yeonproject.dodam_mvvm.view.view_model.WordViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -33,4 +34,5 @@ val exampleModule = module {
 
     viewModel { WordViewModel(get()) }
     viewModel { SongViewModel(get()) }
+    viewModel { MyWordViewModel(get()) }
 }
