@@ -73,7 +73,7 @@ class MyWordFragment : BaseFragment<FragmentMyWordBinding>(R.layout.fragment_my_
     }
 
     private fun setupViewModel() {
-        viewModel.myWordList.observe(this, Observer {
+        viewModel.myWordList.observe(viewLifecycleOwner, Observer {
             myWordAdapter.addData(it)
         })
     }

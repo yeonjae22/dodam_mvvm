@@ -10,7 +10,7 @@ import com.yeonproject.dodam_mvvm.databinding.ItemMyWordBinding
 import com.yeonproject.dodam_mvvm.ext.glideImageSet
 
 
-class MyWordAdapter : RecyclerView.Adapter<MyWordAdapter.ViewHolder>() {
+class MyWordAdapter : RecyclerView.Adapter<MyWordAdapter.MyWordViewHolder>() {
     private var items = mutableListOf<MyWordEntity>()
     private lateinit var binding: ItemMyWordBinding
     private lateinit var listener: OnClickListener
@@ -23,22 +23,22 @@ class MyWordAdapter : RecyclerView.Adapter<MyWordAdapter.ViewHolder>() {
         this.listener = listener
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyWordAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyWordViewHolder {
 
         binding = DataBindingUtil.inflate(
             LayoutInflater.from(parent.context),
-            R.layout.item_song,
+            R.layout.item_my_word,
             parent,
             false
         )
 
-        return MyWordAdapter.ViewHolder(binding)
+        return MyWordViewHolder(binding)
     }
 
     override fun getItemCount(): Int =
         items.size
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) =
+    override fun onBindViewHolder(holder: MyWordViewHolder, position: Int) =
         holder.bind(items[position], listener)
 
     fun addData(addDataList: List<MyWordEntity>) {
@@ -47,7 +47,7 @@ class MyWordAdapter : RecyclerView.Adapter<MyWordAdapter.ViewHolder>() {
         notifyDataSetChanged()
     }
 
-    class ViewHolder(private val binding: ItemMyWordBinding) : RecyclerView.ViewHolder(
+    class MyWordViewHolder(private val binding: ItemMyWordBinding) : RecyclerView.ViewHolder(
         binding.root
     ) {
         fun bind(item: MyWordEntity, listener: OnClickListener?) {

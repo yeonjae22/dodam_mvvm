@@ -8,7 +8,7 @@ import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 
 @BindingAdapter("imageLoad")
-fun ImageView.glideImageSet(image: String) {
+fun ImageView.glideImageSet(image: String?) {
     Glide.with(context)
         .load(image)
         .override(measuredWidth, measuredHeight)
@@ -17,7 +17,7 @@ fun ImageView.glideImageSet(image: String) {
 }
 
 @BindingAdapter("imageLoad")
-fun ImageView.glideImageSet(image: Uri) {
+fun ImageView.glideImageSet(image: Uri?) {
     Glide.with(context)
         .load(image)
         .override(measuredWidth, measuredHeight)
