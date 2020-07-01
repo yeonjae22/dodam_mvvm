@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yeonproject.dodam_mvvm.R
-import com.yeonproject.dodam_mvvm.data.room.entity.MyWordEntity
+import com.yeonproject.dodam_mvvm.data.model.MyWordItem
 import com.yeonproject.dodam_mvvm.databinding.FragmentMyWordListBinding
 import com.yeonproject.dodam_mvvm.ext.shortToast
 import com.yeonproject.dodam_mvvm.view.base.BaseFragment
@@ -23,7 +23,7 @@ class MyWordListFragment : BaseFragment<FragmentMyWordListBinding>(R.layout.frag
     }
     private val myWordAdapter = MyWordModifyAdapter()
     private lateinit var listener: OnClickListener
-    lateinit var myWordEntity: MyWordEntity
+    lateinit var myWordEntity: MyWordItem
     private val viewModel by viewModel<MyWordViewModel>()
 
     interface OnClickListener {
@@ -46,7 +46,7 @@ class MyWordListFragment : BaseFragment<FragmentMyWordListBinding>(R.layout.frag
         }
 
         myWordAdapter.setMoreButtonListener(object : MyWordModifyAdapter.MoreButtonListener {
-            override fun bottomSheetDialog(myWord: MyWordEntity) {
+            override fun bottomSheetDialog(myWord: MyWordItem) {
                 myWordEntity = myWord
                 val bottomSheetDialogFragment = MoreButtonFragment()
                 bottomSheetDialogFragment.setTargetFragment(this@MyWordListFragment, REQUEST_CODE)

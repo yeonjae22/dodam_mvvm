@@ -5,18 +5,18 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.yeonproject.dodam_mvvm.R
-import com.yeonproject.dodam_mvvm.data.room.entity.MyWordEntity
+import com.yeonproject.dodam_mvvm.data.model.MyWordItem
 import com.yeonproject.dodam_mvvm.databinding.ItemMyWordBinding
-import com.yeonproject.dodam_mvvm.ext.glideImageSet
+import com.yeonproject.dodam_mvvm.databinding.ItemMyWordModifyBinding
 
 
 class MyWordModifyAdapter : RecyclerView.Adapter<MyWordModifyAdapter.ViewHolder>() {
-    private var items = mutableListOf<MyWordEntity>()
-    private lateinit var binding: ItemMyWordBinding
+    private var items = mutableListOf<MyWordItem>()
+    private lateinit var binding: ItemMyWordModifyBinding
     private lateinit var listener: MoreButtonListener
 
     interface MoreButtonListener {
-        fun bottomSheetDialog(myWord: MyWordEntity)
+        fun bottomSheetDialog(myWord: MyWordItem)
     }
 
     fun setMoreButtonListener(listener: MoreButtonListener) {
@@ -30,7 +30,7 @@ class MyWordModifyAdapter : RecyclerView.Adapter<MyWordModifyAdapter.ViewHolder>
 
         binding = DataBindingUtil.inflate(
             LayoutInflater.from(parent.context),
-            R.layout.item_my_word,
+            R.layout.item_my_word_modify,
             parent,
             false
         )
@@ -44,34 +44,27 @@ class MyWordModifyAdapter : RecyclerView.Adapter<MyWordModifyAdapter.ViewHolder>
     override fun onBindViewHolder(holder: ViewHolder, position: Int) =
         holder.bind(items[position], listener)
 
-    fun addData(addDataList: List<MyWordEntity>) {
+    fun addData(addDataList: List<MyWordItem>) {
         items.clear()
         items.addAll(addDataList)
         notifyDataSetChanged()
     }
 
-    fun removeData(myWord: MyWordEntity) {
+    fun removeData(myWord: MyWordItem) {
         val position = items.indexOf(myWord)
         items.remove(myWord)
         notifyItemRemoved(position)
     }
 
-    class ViewHolder(private val binding: ItemMyWordBinding) : RecyclerView.ViewHolder(
+    class ViewHolder(private val binding: ItemMyWordModifyBinding) : RecyclerView.ViewHolder(
         binding.root
     ) {
-        fun bind(item: MyWordEntity, listener: MoreButtonListener) {
+        fun bind(item: MyWordItem, listener: MoreButtonListener) {
             binding.run {
-                itemView.run {
-                    setOnClickListener {
-                        listener.bottomSheetDialog(item)
-                    }
-                    tvHangul.text = item.hangul
-                    tvEnglish.text = item.english
-                    val image = context.filesDir.absoluteFile.toString() + "/" + item.image
-                    binding.ivImage.glideImageSet(
-                        image
-                    )
+                btnMore.setOnClickListener {
+                    listener.bottomSheetDialog(item)
                 }
+                myWordItem = item
             }
         }
     }
