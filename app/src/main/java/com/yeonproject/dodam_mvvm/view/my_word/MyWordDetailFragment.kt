@@ -41,10 +41,8 @@ class MyWordDetailFragment :
         binding.linear.addView(myPaint)
 
         binding.tvName.text = arguments?.getString(NAME)
-        val image =
-            context?.filesDir?.absoluteFile.toString() + "/" + arguments?.getString(IMAGE) ?: ""
         binding.ivImage.glideImageSet(
-            image
+            arguments?.getString(IMAGE)
         )
 
         binding.btnBack.setOnClickListener {

@@ -2,6 +2,7 @@ package com.yeonproject.dodam_mvvm.view.view_model
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.yeonproject.dodam_mvvm.data.model.MyWordItem
 import com.yeonproject.dodam_mvvm.data.repository.Callback
 import com.yeonproject.dodam_mvvm.data.repository.my_word.MyWordRepository
 import com.yeonproject.dodam_mvvm.data.room.entity.MyWordEntity
@@ -9,13 +10,17 @@ import com.yeonproject.dodam_mvvm.data.room.entity.MyWordEntity
 class MyWordViewModel(
     private val repository: MyWordRepository
 ) : ViewModel() {
-    val myWordList = MutableLiveData<List<MyWordEntity>>()
+    val myWordList = MutableLiveData<List<MyWordItem>>()
     val myWord = MutableLiveData<MyWordEntity>()
     val result = MutableLiveData<Boolean>()
     fun getMyWordList() {
         repository.getMyWord(object : Callback<List<MyWordEntity>> {
             override fun onSuccess(response: List<MyWordEntity>) {
-                myWordList.postValue(response)
+                val items = mutableListOf<MyWordItem>()
+                for (i in response.indices) {
+                    items.add(response[i].toMyWordItem())
+                }
+                myWordList.postValue(items)
             }
 
             override fun onFailure(message: String) {

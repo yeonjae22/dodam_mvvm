@@ -5,18 +5,19 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.yeonproject.dodam_mvvm.R
+import com.yeonproject.dodam_mvvm.data.model.MyWordItem
 import com.yeonproject.dodam_mvvm.data.room.entity.MyWordEntity
 import com.yeonproject.dodam_mvvm.databinding.ItemMyWordBinding
 import com.yeonproject.dodam_mvvm.ext.glideImageSet
 
 
 class MyWordAdapter : RecyclerView.Adapter<MyWordAdapter.MyWordViewHolder>() {
-    private var items = mutableListOf<MyWordEntity>()
+    private var items = mutableListOf<MyWordItem>()
     private lateinit var binding: ItemMyWordBinding
     private lateinit var listener: OnClickListener
 
     interface OnClickListener {
-        fun onClick(myWord: MyWordEntity)
+        fun onClick(myWord: MyWordItem)
     }
 
     fun setOnClickListener(listener: OnClickListener) {
@@ -41,7 +42,7 @@ class MyWordAdapter : RecyclerView.Adapter<MyWordAdapter.MyWordViewHolder>() {
     override fun onBindViewHolder(holder: MyWordViewHolder, position: Int) =
         holder.bind(items[position], listener)
 
-    fun addData(addDataList: List<MyWordEntity>) {
+    fun addData(addDataList: List<MyWordItem>) {
         items.clear()
         items.addAll(addDataList)
         notifyDataSetChanged()
@@ -50,17 +51,14 @@ class MyWordAdapter : RecyclerView.Adapter<MyWordAdapter.MyWordViewHolder>() {
     class MyWordViewHolder(private val binding: ItemMyWordBinding) : RecyclerView.ViewHolder(
         binding.root
     ) {
-        fun bind(item: MyWordEntity, listener: OnClickListener?) {
+        fun bind(item: MyWordItem, listener: OnClickListener?) {
             binding.run {
                 itemView.run {
                     setOnClickListener {
                         listener?.onClick(item)
                     }
-                    val image = context.filesDir.absoluteFile.toString() + "/" + item.image
-                    binding.ivImage.glideImageSet(
-                        image
-                    )
                 }
+                myWordItem = item
             }
         }
     }

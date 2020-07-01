@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.yeonproject.dodam_mvvm.R
-import com.yeonproject.dodam_mvvm.data.room.entity.MyWordEntity
+import com.yeonproject.dodam_mvvm.data.model.MyWordItem
 import com.yeonproject.dodam_mvvm.databinding.FragmentMyWordBinding
 import com.yeonproject.dodam_mvvm.view.base.BaseFragment
 import com.yeonproject.dodam_mvvm.view.my_word.adapter.MyWordAdapter
@@ -49,7 +49,7 @@ class MyWordFragment : BaseFragment<FragmentMyWordBinding>(R.layout.fragment_my_
 
         myWordAdapter.setOnClickListener(object :
             MyWordAdapter.OnClickListener {
-            override fun onClick(word: MyWordEntity) {
+            override fun onClick(word: MyWordItem) {
                 if (language == HANGUL) {
                     listener.onClick(
                         MyWordDetailFragment.newInstance(
